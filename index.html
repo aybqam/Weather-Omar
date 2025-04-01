@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Important metas -->
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="theme-color" content="#1D1C1F">
+
+        <!-- Accessibility / SEO metas -->
+        <meta name="title" content="Weather-App">
+        <meta name="description" content="Checking the weather has never been more enjoyable than with this Weather-App 🌬✨">
+        <meta http-equiv="Content-Language" content="en">
+        <meta name="author" content="Farouk Bouaziz">
+        <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
+
+        <!-- Open Graph metas -->
+        <meta property="og:title" content="Weather-App">
+        <meta property="og:description" content="Checking the weather has never been more enjoyable than with this Weather-App 🌬✨">
+        <meta property="og:url" content="https://itsfarouk.github.io/Weather-App/">
+        <meta property="og:image" content="example.png">
+        <meta property="og:type" content="website">
+        <meta property="og:locale" content="en_US">
+
+        <!-- Font -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+
+        <!-- Website assets links -->
+        <link rel="stylesheet" href="assets/css/style.css">
+        <script type="module" src="assets/js/app.js"></script>
+        <link rel="canonical" href="https://itsfarouk.github.io/Weather-App/">
+
+        <title>Weather-App</title> 
+    </head>
+    <body>     
+        <header class="header">
+            <div class="header__container container">
+
+                <a href="/Weather-App/#/current-location" class="header__logo">
+                    <img src="assets/images/logo.png" alt="Weather App Logo" loading="lazy">
+                </a>
+
+                <div class="header__search" data-search-view> 
+
+                    <div class="header__search-wrapper">
+
+                        <span class="header__search-search-icon material-icon" aria-hidden="true">search</span>
+
+                        <button class="header__search-back-btn icon-btn has-state" type="button" aria-label="Go back" data-search-toggler>
+
+                            <span class="material-icon" aria-hidden="true">arrow_back</span>
+
+                        </button>
+                        
+                        <input class="header__search-field" id="search-city"
+                        type="search"
+                        name="search"
+                        placeholder="Search city..."
+                        autocomplete="off"
+                        aria-label="Search for a city"
+                        data-search-field>
+                        
+                    </div>
+
+                    <div class="header__search-result" data-search-result></div>
+
+                </div> 
+
+                <div class="header__actions">
+
+                    <button class="header__search-btn icon-btn has-state" type="button" aria-label="open search" data-search-toggler>
+
+                        <span class="material-icon icon" aria-hidden="true">search</span>
+
+                    </button>
+
+                    <a class="header__current-btn btn-primary has-state" href="#/current-location" data-current-location-btn 
+                    >
+                        <span class="material-icon" aria-hidden="true">my_location</span>
+                        
+                        <span class="header__btn-text">Current Location</span>
+                    </a>
+
+                </div> 
+
+            </div> 
+        </header>
+
+        <main class="main">
+            <div class="main__container container" data-container>
+                
+                <aside class="main__left-content">
+                    <!-- Current Weather -->
+                    <section class="current-weather section" aria-label="Current Weather" data-current-weather></section>
+
+                    <!-- 5 Days Forecast -->
+                    <section class="daily-forecast section" aria-labelledby="forecast-label" data-5-day-forecast></section>
+                </aside>
+
+                <div class="main__right-content">
+                    <!-- Highlights -->
+                    <section class="highlights section" aria-labelledby="highlights-label" data-highlights></section>
+
+                    <!-- Hourly forecast -->
+                    <section class="hourly-forecast section" aria-label="hourly forecast" data-hourly-forecast></section>
+
+                    <!-- Footer -->
+                    <footer class="footer">
+                        <p class="footer__text body--3">
+                            Copyright 2025 Bouaziz Farouk. All Rights Reserved.
+                        </p>
+
+                        <p class="footer__img body--3">
+                            Powered By 
+                            <a href="https://openweathermap.org/api" title="Free OpenWeather Api" target="_blank" rel="noopener">
+                                <img 
+                                src="./assets/images/openweather.png" width="150" height="30" loading="lazy" alt="OpenWeather">
+                            </a>
+                        </p>
+                    </footer>
+                </div>
+
+                <div class="loading" data-loading></div>
+
+            </div>
+        </main>
+
+        <!-- 404 Section -->
+        <section class="error" data-error-interface>
+
+            <h2 class="heading">404</h2>
+
+            <p class="body--1">Page not found!</p>
+
+            <button class="error__btn btn-primary" type="button">
+                <a href="#/weather?lat=51.5073219&lon=-0.1276474">
+                    <span>Go Home</span>
+                </a>
+            </button>
+
+        </section>
+    </body>
+</html>
