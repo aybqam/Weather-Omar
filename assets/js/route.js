@@ -9,7 +9,7 @@
 
 import { updateWeather, error404 } from "./app.js";
 
-const defaultLocation = "#/weather?lat=31.5&lon=34.46667" // GAZA
+const defaultLocation = "#/weather?lat=44.4938203&lon=11.3426327" // GAZA
 
 const currentLocation = function () {
     window.navigator.geolocation.getCurrentPosition(res => {
