@@ -39,11 +39,34 @@
             <div class="header__container container">
 
                 <a href="/Weather-App/#/current-location" class="header__logo">
-                    <img src="assets/images/logo.jpg" alt="Weather App Logo" loading="lazy">
+                    <img src="assets/images/logo.png" alt="Weather App Logo" loading="lazy">
                 </a>
 
-                
-                 
+                <div class="header__search" data-search-view> 
+
+                    <div class="header__search-wrapper">
+
+                        <span class="header__search-search-icon material-icon" aria-hidden="true">search</span>
+
+                        <button class="header__search-back-btn icon-btn has-state" type="button" aria-label="Go back" data-search-toggler>
+
+                            <span class="material-icon" aria-hidden="true">arrow_back</span>
+
+                        </button>
+                        
+                        <input class="header__search-field" id="search-city"
+                        type="search"
+                        name="search"
+                        placeholder="Search city..."
+                        autocomplete="off"
+                        aria-label="Search for a city"
+                        data-search-field>
+                        
+                    </div>
+
+                    <div class="header__search-result" data-search-result></div>
+
+                </div> 
 
                 <div class="header__actions">
 
@@ -86,9 +109,16 @@
                     <!-- Footer -->
                     <footer class="footer">
                         <p class="footer__text body--3">
-                            Copyright 2025 All rights reserved by Ayoub Alayoubi.
+                            Copyright 2025 Ayoub Alayoubi. All Rights Reserved.
                         </p>
 
+                        <p class="footer__img body--3">
+                            Powered By 
+                            <a href="https://openweathermap.org/api" title="Free OpenWeather Api" target="_blank" rel="noopener">
+                                <img 
+                                src="./assets/images/openweather.png" width="150" height="30" loading="lazy" alt="OpenWeather">
+                            </a>
+                        </p>
                     </footer>
                 </div>
 
