@@ -15,6 +15,124 @@ import * as module from "./module.js";
  * @param {string} eventType - Type of event e.g.`"click"`,`"mouseover"`.
  * @param {(event: Event => void)} callback - Callback function
  */
+ 
+ // ===== Prayer Times Module (Arabic, uses Aladhan API) =====
+// ضع هذا الكود في نهاية assets/js/app.js أو في ملف جديد يُستدعى من app.js
+
+(async function initPrayerTimes() {
+  try {
+    // DOM elements
+    const container = document.querySelector('[data-prayer-times]');
+    if (!container) return; // إن لم يكن القسم موجوداً، اخرج
+    const listEl = container.querySelector('[data-prayer-list]');
+    const metaEl = container.querySelector('[data-prayer-location]');
+    
+
+    // Helper: get coords from URL params lat & lon
+    function getCoordsFromUrl() {
+      try {
+        const params = new URLSearchParams(window.location.search || window.location.hash.split('?')[1] || '');
+        const lat = params.get('lat');
+        const lon = params.get('lon');
+        if (lat && lon) return { lat: parseFloat(lat), lon: parseFloat(lon) };
+      } catch (e) { /* ignore */ }
+      return null;
+    }
+
+    // Try URL params first
+    let coords = getCoordsFromUrl();
+
+    // If not found, try geolocation
+    if (!coords && navigator.geolocation) {
+      // show message
+      metaEl.textContent = 'جارٍ تحديد الموقع عبر المتصفح…';
+      coords = await new Promise((resolve) => {
+        const timer = setTimeout(() => resolve(null), 8000); // timeout 8s
+        navigator.geolocation.getCurrentPosition(
+          (pos) => { clearTimeout(timer); resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude }); },
+          () => { clearTimeout(timer); resolve(null); },
+          { maximumAge: 60_000, timeout: 7000, enableHighAccuracy: false }
+        );
+      });
+    }
+
+    // If still no coords, fallback to example coordinates (يمكنك تعديلها)
+    if (!coords) {
+      // نعرض رسالة للمستخدم
+      metaEl.textContent = 'لم يتم العثور على إحداثيات. عرض مواقيت افتراضية.';
+      coords = { lat: 24.7136, lon: 46.6753 }; // Riyadh as fallback
+    }
+
+    // Show coords in meta (عرض مبسط باسم المدينة غير متاح دون Geocoding)
+    metaEl.textContent = `الإحداثيات: ${coords.lat.toFixed(4)}, ${coords.lon.toFixed(4)}`;
+
+    // Build Aladhan API URL (Arabic)
+    const apiUrl = `https://api.aladhan.com/v1/timings?latitude=${encodeURIComponent(coords.lat)}&longitude=${encodeURIComponent(coords.lon)}&method=2&language=ar`;
+
+    // Fetch timings
+    const resp = await fetch(apiUrl);
+    if (!resp.ok) throw new Error('فشل في جلب مواقيت الصلاة');
+    const data = await resp.json();
+
+    if (!data || data.code !== 200 || !data.data) throw new Error('بيانات غير صحيحة من مزود المواقيت');
+
+    const timings = data.data.timings || {};
+    // تحديد الأسماء المراد عرضها بالعربية (ترتيب مناسب)
+    const keys = [
+      { key: 'Fajr', label: 'الفجر' },
+      { key: 'Sunrise', label: 'الشروق' },
+      { key: 'Dhuhr', label: 'الظهر' },
+      { key: 'Asr', label: 'العصر' },
+      { key: 'Maghrib', label: 'المغرب' },
+      { key: 'Isha', label: 'العشاء' }
+    ];
+
+    // مسح العناصر القديمة وملء الجديدة
+    listEl.innerHTML = '';
+    keys.forEach(({ key, label }) => {
+      const timeRaw = timings[key] || '--:--';
+      // بعض نواتج aladhan قد تحتوي على (GMT) أو ملاحق؛ نأخذ فقط HH:MM
+      // تحويل وقت 24 ساعة إلى 12 ساعة مع AM/PM
+function convertTo12Hour(time24) {
+  const [hourStr, min] = String(time24).split(':');
+  let hour = parseInt(hourStr, 10);
+  const ampm = hour >= 12 ? 'PM' : 'AM';
+  hour = hour % 12;
+  if (hour === 0) hour = 12;
+  return `${hour}:${min} ${ampm}`;
+}
+
+const time = convertTo12Hour(String(timeRaw).split(' ')[0]);
+      const li = document.createElement('li');
+      li.className = 'prayer-times__item';
+      li.innerHTML = `<span>${label}</span><span class="prayer-times__time">${time}</span>`;
+      listEl.appendChild(li);
+    });
+
+    // عرض التاريخ بالعربية (استخدم التاريخ الميلادي المقدم من Aladhan إن وُجد)
+    const readableDate = (data.data.date && (data.data.date.readable || data.data.date.hijri && data.data.date.hijri.date)) || '';
+    // لو لم يتوفر، نستخدم التاريخ المحلي
+    const now = new Date();
+    const dateStr = readableDate || new Intl.DateTimeFormat('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(now);
+    
+
+    // إذا وفّر Aladhan اسم المدينة أو المنطقة في meta، اعرضه
+    const metaLocation = [];
+    if (data.data.meta && data.data.meta.timezone) metaLocation.push(data.data.meta.timezone);
+    // Aladhan لا تعطي اسم المدينة دوماً، لذا نعرض الإحداثيات أيضاً
+    if (metaLocation.length) metaEl.textContent = `المنطقة: ${metaLocation.join(', ')}`;
+    else metaEl.textContent = `الإحداثيات: ${coords.lat.toFixed(4)}, ${coords.lon.toFixed(4)}`;
+
+  } catch (err) {
+    console.error('PrayerTimes Error:', err);
+    const container = document.querySelector('[data-prayer-times]');
+    if (container) {
+      container.querySelector('[data-prayer-list]').innerHTML = '<li class="prayer-times__item">تعذّر جلب مواقيت الصلاة حالياً.</li>';
+      container.querySelector('[data-prayer-location]').textContent = 'خطأ أثناء جلب البيانات';
+    }
+  }
+})();
+ 
 const addEventOnElements = function (elements, eventType, callback) {
     if (!elements || typeof eventType !== "string" || typeof callback !== "function") {
         console.error("Invalid parameters passed to addEventOnElements:" ,elements, eventType, callback);
