@@ -178,6 +178,96 @@ body {
   border-radius: var(--radius-pill);
 }
 
+/* ===== Prayer Times Styles ===== */
+.prayer-times {
+  margin-bottom: 1.25rem;
+}
+
+.prayer-times__container {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,255,255,0.04);
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(7, 8, 10, 0.04);
+}
+
+.prayer-times__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.prayer-times__title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #F8F9FA; /* تأكد من تناسبه مع ثيم موقعك */
+}
+
+.prayer-times__meta {
+  margin: 0;
+  font-size: 0.85rem;
+  opacity: 0.8;
+  direction: rtl;
+}
+
+.prayer-times__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 0.5rem 1rem;
+}
+
+.prayer-times__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.02);
+  font-weight: 600;
+  color: #EDEDED;
+}
+
+.prayer-times__time {
+  font-weight: 700;
+  font-size: 0.95rem;
+  direction: ltr; /* keep numerals LTR for clarity */
+}
+
+.prayer-times__footer {
+  margin-top: 0.6rem;
+  text-align: left;
+  direction: ltr;
+}
+
+.prayer-times__date {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+/* Skeleton placeholder */
+.prayer-times__item.skeleton {
+  opacity: 0.7;
+}
+
+/* Responsive tweaks */
+@media (max-width: 640px) {
+  .prayer-times__list {
+    grid-template-columns: 1fr;
+  }
+  .prayer-times__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .25rem;
+  }
+  .prayer-times__footer { text-align: right; direction: rtl; }
+}
+
 /*---------------------------------------
 Material Icons
 ---------------------------------------*/
